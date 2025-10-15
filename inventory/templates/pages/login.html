@@ -1,0 +1,15 @@
+<h2 style = "text-align: center;">Login</h2>
+<form method="post" action ="{% url 'login' %}">
+    {% csrf_token %}
+    <div style="text-align: center;">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="submit">Login</button>
+
+    </div>
+
+    
+</form>

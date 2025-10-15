@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<head>
+    <title style ="position: relative;">Inventory Page</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            border: 1px solid #000000;
+        }
+        tr:hover {background-color: #f5f5f5;}
+
+        input[type="text"]{
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 300px;
+        }
+
+    </style>
+    <script>
+        function searchTable() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const rows = document.querySelectorAll("table tbody tr");
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(input) ? "" : "none";
+            });
+        }
+    </script>
+</head>
+<body>
+    <h2> Inventory List</h2>
+    <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search for items..">
+
+    <img src="https://www.assetcool.com/img/logo.svg" alt="Your Image" style="background-color: #003366; width: 300px; height: 100px; position: absolute; top: 10px; right: 10px;">
+    <form action="{% url 'logout' %}" method="post" style="display:inline">
+        {% csrf_token %}
+        <button type="submit" style="font-size: 18px; width: 100px; height: 30px; position: absolute; top: 112px; right: 10px;">Logout</button>
+    </form>
+    <p class="text-lg font-semibold" style=" font-size: 18px; position: absolute; top: 95px; left: 10px; border: 1px solid #000000; padding: 3px;"> 
+        Number of Items Out of Stock: <span class="text-2xl font-extrabold">{{ out_of_stock }}</span>
+    </p>
+    <table id="inventoryTable">
+        <thead>
+            <tr style = "background-color: #003366; color: white;">
+                <th>Item Name</th>
+                <th>Item ID</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+                <td>{{ item.item_name }}</td>
+                <td {% if item.item_id == "nan" %} style="background-color: #F4Ab6A;" {%endif%}>{{ item.item_id }}</td>
+                <td {% if item.stock == 0 %} style="background-color: #ff4122;" {%endif%}>{{ item.stock }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
