@@ -51,6 +51,7 @@
     <table id="inventoryTable">
         <thead>
             <tr style = "background-color: #003366; color: white;">
+                <th>#</th>
                 <th>Item Name</th>
                 <th>Item ID</th>
                 <th>Stock</th>
@@ -59,6 +60,7 @@
         <tbody>
             {% for item in data %}
             <tr>
+                <td>{{ forloop.counter }}</td>
                 <td>{{ item.item_name }}</td>
                 <td {% if item.item_id == "nan" %} style="background-color: #F4Ab6A;" {%endif%}>{{ item.item_id }}</td>
                 <td {% if item.stock == 0 %} style="background-color: #ff4122;" {%endif%}>{{ item.stock }}</td>

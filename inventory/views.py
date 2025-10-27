@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 import pandas as pd
 from django.shortcuts import render, redirect
+from .models import Items
+import openpyxl
 
 # Create your views here.
 def register_view(request):
@@ -46,34 +48,26 @@ def logout_view(request):
         logout(request)
         return render(request, 'pages/logout.html')
     else:
-        return HttpResponse('Not logged in', status=400) 
+        return HttpResponse('Not logged in', status=400)
 
-def protected_view(request): 
+def inventory_view(request):
     user = request.user
     if not user.is_authenticated:
         return redirect('/login/')
-          
-    df = pd.read_excel('C:/Users/ErnestKhong/Cable Coatings Limited t a AssetCool/AssetCool - Data Analysis/Engineering/inventory_control/Master Inventory.xlsx', sheet_name = 'BRP (Mark 1 + 1.5 + 2)')
-    # item_name = df['Item name']
-    # item_id = df['Item ID']
-    # stock = df['Stock']
-    data = df[['Item name', 'Item ID', 'Stock']].to_dict(orient='records')
-    cleaned_data = []
-    for row in data:
-        cleaned_row = {
-            'item_name': row['Item name'],
-            'item_id': row['Item ID'],
-            'stock': row['Stock']
-        }
-        if pd.isna(cleaned_row['item_id']):
-            cleaned_row['item_id'] = "nan"
-        cleaned_row['stock'] = int(cleaned_row['stock']) if not pd.isna(cleaned_row['stock']) else 0
 
-        cleaned_data.append(cleaned_row)
+    all_items = Items.objects.all()
+    out_of_stock = Items.objects.filter(stock=0).count()
 
-    out_of_stock = sum(1 for item in cleaned_data if item['stock'] == 0)
+    data = []
+    for item in all_items:
+        data.append({
+            'item_name': item.item_name,
+            'item_id': item.item_id,
+            'stock': item.stock
+        })
+    
     context = {
-        'data': cleaned_data,
+        'data': data,
         'out_of_stock': out_of_stock,
     }
 
